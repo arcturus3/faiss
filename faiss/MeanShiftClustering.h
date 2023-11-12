@@ -48,6 +48,9 @@ struct MeanShiftClusteringParameters {
 
     /// when the training set is encoded, batch size of the codec decoder
     size_t decode_block_size = 32768;
+
+    float h = 0.1;
+    float lambda = 10;
 };
 
 struct MeanShiftClusteringIterationStats {
