@@ -47,6 +47,7 @@ set(FAISS_SRC
   IndexShards.cpp
   IndexShardsIVF.cpp
   MatrixStats.cpp
+  MeanShiftClustering.cpp
   MetaIndexes.cpp
   VectorTransform.cpp
   clone_index.cpp
@@ -139,6 +140,7 @@ set(FAISS_HEADERS
   IndexShards.h
   IndexShardsIVF.h
   MatrixStats.h
+  MeanShiftClustering.h
   MetaIndexes.h
   MetricType.h
   VectorTransform.h
