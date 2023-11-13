@@ -48,9 +48,6 @@ struct MeanShiftClusteringParameters {
 
     /// when the training set is encoded, batch size of the codec decoder
     size_t decode_block_size = 32768;
-
-    float h = 0.1;
-    float lambda = 10;
 };
 
 struct MeanShiftClusteringIterationStats {
@@ -75,7 +72,9 @@ struct MeanShiftClusteringIterationStats {
  */
 struct MeanShiftClustering : MeanShiftClusteringParameters {
     size_t d; ///< dimension of the vectors
-    size_t k; ///< nb of centroids
+
+    float h = 0.1;
+    float lambda = 10;
 
     /** centroids (k * d)
      * if centroids are set on input to train, they will be used as
@@ -89,36 +88,13 @@ struct MeanShiftClustering : MeanShiftClusteringParameters {
     MeanShiftClustering(int d, int k);
     MeanShiftClustering(int d, int k, const MeanShiftClusteringParameters& cp);
 
-    /** run k-means training
+    /** run mean shift
      *
-     * @param x          training vectors, size n * d
-     * @param index      index used for assignment
-     * @param x_weights  weight associated to each vector: NULL or size n
+     * @param nx        number of training vectors
+     * @param xs        training vectors, size nx * d
+     * @param index     index used for assignment
      */
-    virtual void train(
-            idx_t n,
-            const float* x,
-            faiss::Index& index,
-            const float* x_weights = nullptr);
-
-    /** run with encoded vectors
-     *
-     * win addition to train()'s parameters takes a codec as parameter
-     * to decode the input vectors.
-     *
-     * @param codec      codec used to decode the vectors (nullptr =
-     *                   vectors are in fact floats)
-     */
-    void train_encoded(
-            idx_t nx,
-            const uint8_t* x_in,
-            const Index* codec,
-            Index& index,
-            const float* weights = nullptr);
-
-    /// Post-process the centroids after each centroid update.
-    /// includes optional L2 normalization and nearest integer rounding
-    void post_process_centroids();
+    virtual void train(idx_t nx, const float* xs, faiss::Index& index);
 
     virtual ~MeanShiftClustering() {}
 };
