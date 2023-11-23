@@ -36,6 +36,7 @@ MeanShiftClustering::MeanShiftClustering(size_t d, idx_t n, float* xs)
         ys1 = new float[n * d];
         yst = new float[n * d];
         weights = new float[d];
+        index = IndexFlatL2(d);
     }
 
 // double check this?
@@ -62,6 +63,7 @@ void MeanShiftClustering::connected_components() {
             }
         }
         if (!assigned) {
+            labels[i] = centroids.size();
             centroids.push_back(i);
         }
     }
@@ -69,7 +71,7 @@ void MeanShiftClustering::connected_components() {
 
 void MeanShiftClustering::train() {
     memcpy(ys, xs, n * d * sizeof(float));
-    memset(weights, 1. / d, d * sizeof(float));
+    for (size_t l = 0; l < d; l++)  weights[l] = 1. / d;
     bool converged = false;
 
     while (!converged) {
