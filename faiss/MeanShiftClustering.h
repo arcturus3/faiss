@@ -7,9 +7,11 @@
 
 /** Implementation of Weighted Blurring Mean Shift clustering as described in https://arxiv.org/pdf/2012.10929.pdf  */
 
-#ifndef FAISS_CLUSTERING_H
-#define FAISS_CLUSTERING_H
+#ifndef FAISS_MEAN_SHIFT_CLUSTERING_H
+#define FAISS_MEAN_SHIFT_CLUSTERING_H
 #include <faiss/Index.h>
+#include <faiss/IndexFlat.h>
+#include <faiss/IndexIVFFlat.h>
 
 #include <vector>
 
@@ -58,7 +60,7 @@ struct MeanShiftClustering {
     /// assignment to centroids represented as indexes to centroids, size n
     size_t* labels;
     /// index used during clustering
-    IndexFlat index;
+    IndexFlatL2 index;
 
     MeanShiftClustering(size_t d, idx_t n, float* xs);
 
