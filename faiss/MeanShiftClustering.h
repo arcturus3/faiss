@@ -15,29 +15,6 @@
 
 namespace faiss {
 
-/** Class for the clustering parameters. Can be passed to the
- * constructor of the Clustering object.
- */
-struct MeanShiftClusteringParameters {
-    /// bandwidth used for KDE
-    float bandwidth = 0.1;
-    /// entropy regularization coefficient for weight update
-    float lambda = 10.;
-    /// stop when the mean shift magnitude is less than tolerance for all points
-    float tolerance = 1e-6;
-    /// distance threshold for cluster extraction via connected components (should be larger than threshold)
-    float epsilon = 1e-5;
-    /// log info during clustering
-    bool verbose = false;
-};
-
-struct MeanShiftClusteringIterationStats {
-    /// seconds for iteration
-    double time;
-    /// seconds for just search
-    double time_search;
-};
-
 /** K-means clustering based on assignment - centroid update iterations
  *
  * The clustering is based on an Index object that assigns training
@@ -50,21 +27,40 @@ struct MeanShiftClusteringIterationStats {
  * initialization.
  *
  */
-struct MeanShiftClustering : MeanShiftClusteringParameters {
-    /// dimension of the vectors
+struct MeanShiftClustering {
+    /// bandwidth used for KDE
+    float bandwidth = 0.1;
+    /// entropy regularization coefficient for weight update
+    float lambda = 10.;
+    /// stop when the mean shift magnitude is less than tolerance for all points
+    float tolerance = 1e-6;
+    /// distance threshold for cluster extraction via connected components (should be larger than threshold)
+    float epsilon = 1e-5;
+    /// log info during clustering
+    bool verbose = false;
+
+    /// dimension of vectors
     size_t d;
+    /// number of vectors
+    idx_t n;
+    /// original vectors, size n * d
+    float* xs;
+    /// resulting vectors, size n * d
+    float* ys;
+    /// intermediate vectors during clustering, size n * d
+    float* ys1;
+    /// transformed vectors during clustering, size n * d
+    float* yst;
+    /// weight vector used during clustering, size d
+    float* weights;
+    /// centroids represented as indexes to ys
+    std::vector<size_t> centroids;
+    /// assignment to centroids represented as indexes to centroids, size n
+    size_t* labels;
+    /// index used during clustering
+    IndexFlat index;
 
-    /** centroids (k * d)
-     * if centroids are set on input to train, they will be used as
-     * initialization
-     */
-    float* centroids;
-
-    /// stats at every iteration of clustering
-    std::vector<MeanShiftClusteringIterationStats> iteration_stats;
-
-    MeanShiftClustering(int d);
-    MeanShiftClustering(int d, const MeanShiftClusteringParameters& cp);
+    MeanShiftClustering(size_t d, idx_t n, float* xs);
 
     /** run mean shift
      *
@@ -72,26 +68,12 @@ struct MeanShiftClustering : MeanShiftClusteringParameters {
      * @param xs        training vectors, size n * d
      * @param index     index used for assignment
      */
-    virtual void train(idx_t n, const float* xs, faiss::Index& index);
+    virtual void train();
 
-    void connected_components(idx_t n, const float* xs);
+    void connected_components();
 
     virtual ~MeanShiftClustering() {}
 };
-
-/** simplified interface
- *
- * @param d dimension of the data
- * @param n nb of training vectors
- * @param xs training set (size n * d)
- * @param centroids output centroids (size k * d)
- * @return number of centroids k
- */
-size_t mean_shift_clustering(
-        size_t d,
-        size_t n,
-        const float* xs,
-        float* centroids);
 
 } // namespace faiss
 
