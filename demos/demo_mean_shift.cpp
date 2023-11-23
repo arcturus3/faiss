@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
+#include <random>
 
 #include <faiss/Clustering.h>
 #include <faiss/IndexFlat.h>
@@ -83,10 +84,16 @@ int n_small = 10;
 int n; // number of training points
 
 void generate_dataset(size_t d, size_t n, std::vector<float>& xs) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<float> dist(0, 1);
     xs.resize(n * d);
     for (size_t i = 0; i < n; i++) {
         for (size_t l = 0; l < d; l++) {
-            xs[i * d + l] = i & 1;
+            xs[i * d + l] = dist(gen);
+            if (l < 2) {
+                xs[i * d + l] += (i < n / 2) ? 10 : -10;
+            }
         }
     }
 }
@@ -94,8 +101,8 @@ void generate_dataset(size_t d, size_t n, std::vector<float>& xs) {
 } // namespace
 
 int main(int argc, char** argv) {
-    size_t d = 2;
-    faiss::idx_t n = 10;
+    size_t d = 32;
+    faiss::idx_t n = 20;
     std::vector<float> xs;
 
     printf("generate training set\n");
@@ -107,15 +114,15 @@ int main(int argc, char** argv) {
     mean_shift.connected_components();
 
     for (size_t i = 0; i < mean_shift.centroids.size(); i++) {
-        printf("cluster %d: [", i);
+        printf("cluster %zu: [", i);
         for (size_t l = 0; l < d - 1; l++) {
-            printf("%d, ", mean_shift.ys[mean_shift.centroids[i] * d + l]);
+            printf("%f, ", mean_shift.ys[mean_shift.centroids[i] * d + l]);
         }
-        printf("%d]\n", mean_shift.ys[mean_shift.centroids[i] * d + d - 1]);
+        printf("%f]\n", mean_shift.ys[mean_shift.centroids[i] * d + d - 1]);
     }
 
     for (size_t i = 0; i < n; i++) {
-        printf("label %d: %d\n", i, mean_shift.labels[i]);
+        printf("label %zu: %zu\n", i, mean_shift.labels[i]);
     }
 
     // int the_index_num = -1;
