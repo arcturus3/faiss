@@ -70,7 +70,6 @@ void MeanShiftClustering::connected_components() {
 void MeanShiftClustering::train() {
     memcpy(ys, xs, n * d * sizeof(float));
     memset(weights, 1. / d, d * sizeof(float));
-    RangeSearchResult search_result(n);
     bool converged = false;
 
     while (!converged) {
@@ -81,6 +80,7 @@ void MeanShiftClustering::train() {
         }
         index.reset();
         index.add(n, yst);
+        RangeSearchResult search_result(n);
         index.range_search(n, yst, HUGE_VAL, &search_result);
 
         memset(weights, 0, d * sizeof(float));

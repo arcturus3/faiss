@@ -24,3 +24,6 @@ target_link_libraries(demo_weighted_kmeans PRIVATE faiss)
 
 add_executable(demo_residual_quantizer EXCLUDE_FROM_ALL demo_residual_quantizer.cpp)
 target_link_libraries(demo_residual_quantizer PRIVATE faiss)
+
+add_executable(demo_mean_shift EXCLUDE_FROM_ALL demo_mean_shift.cpp)
+target_link_libraries(demo_mean_shift PRIVATE faiss)
