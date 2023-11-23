@@ -150,6 +150,7 @@ typedef uint64_t size_t;
 #endif // !_MSC_VER
 
 #include <faiss/Clustering.h>
+#include <faiss/MeanShiftClustering.h>
 
 #include <faiss/utils/hamming.h>
 #include <faiss/utils/hamming_distance/common.h>
@@ -409,6 +410,7 @@ void gpu_sync_all_devices()
 %include  <faiss/IndexFlatCodes.h>
 %include  <faiss/IndexFlat.h>
 %include  <faiss/Clustering.h>
+%include  <faiss/MeanShiftClustering.h>
 
 %include  <faiss/utils/extra_distances.h>
 
