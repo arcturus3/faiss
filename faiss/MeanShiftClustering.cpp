@@ -28,21 +28,19 @@
 
 namespace faiss {
 
-MeanShiftClustering::MeanShiftClustering(size_t d, idx_t n, float* xs)
-    : d(d), n(n), xs(xs) {
+MeanShiftClustering::MeanShiftClustering(size_t d, idx_t n, float* xs) : d(d), n(n), xs(xs) {
+    ys = new float[n * d];
+    ys1 = new float[n * d];
+    yst = new float[n * d];
+    weights = new float[d];
+    labels = new size_t[n];
+    index = IndexFlatL2(d);
+}
 
-
-        ys = new float[n * d];
-        ys1 = new float[n * d];
-        yst = new float[n * d];
-        weights = new float[d];
-        index = IndexFlatL2(d);
-    }
-
-// double check this?
 float k(float x) {
     // return x <= 1. ? 1. : 0.;
-    return exp(-x * x);
+    // return exp(-x * x);
+    return exp(-x);
 }
 
 void MeanShiftClustering::connected_components() {
@@ -74,7 +72,9 @@ void MeanShiftClustering::train() {
     for (size_t l = 0; l < d; l++)  weights[l] = 1. / d;
     bool converged = false;
 
-    while (!converged) {
+    int it = 0;
+    while (!converged && it < 30) {
+        it++;
         for (idx_t i = 0; i < n; i++) {
             for (size_t l = 0; l < d; l++) {
                 yst[i * d + l] = sqrt(weights[l]) * ys[i * d + l];

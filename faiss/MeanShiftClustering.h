@@ -31,7 +31,7 @@ namespace faiss {
  */
 struct MeanShiftClustering {
     /// bandwidth used for KDE
-    float bandwidth = 1.;
+    float bandwidth = 0.1;
     /// entropy regularization coefficient for weight update
     float lambda = 10.;
     /// stop when the mean shift magnitude is less than tolerance for all points
