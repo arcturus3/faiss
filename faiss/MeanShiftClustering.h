@@ -35,9 +35,11 @@ struct MeanShiftClustering {
     /// entropy regularization coefficient for weight update
     float lambda = 10.;
     /// stop when the mean shift magnitude is less than tolerance for all points
-    float tolerance = 1e-6;
+    float tolerance = 1e-4;
     /// distance threshold for cluster extraction via connected components (should be larger than threshold)
-    float epsilon = 1e-5;
+    float epsilon = 1e-3;
+    /// do weighted blurring mean shift
+    bool weighted = false;
     /// log info during clustering
     bool verbose = false;
 
