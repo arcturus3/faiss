@@ -18,3 +18,4 @@
 /tests/gtest/
 faiss/python/swigfaiss_avx2.swig
 /build/
+/.venv/
