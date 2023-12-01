@@ -69,13 +69,17 @@ void MeanShiftClustering::connected_components() {
 
 void MeanShiftClustering::train() {
     memcpy(ys, xs, n * d * sizeof(float));
+
     if (weighted) {
         for (size_t l = 0; l < d; l++)  weights[l] = 1. / d;
     }
-    bool converged = false;
 
+    bool converged = false;
     size_t it = 0;
     while (!converged) {
+        printf("iteration %zu\n", it);
+        it++;
+
         if (weighted) {
             for (idx_t i = 0; i < n; i++) {
                 for (size_t l = 0; l < d; l++) {
@@ -83,17 +87,17 @@ void MeanShiftClustering::train() {
                 }
             }
         }
-        printf("iteration %zu\n", it);
-        it++;
+
         index.reset();
-        index.add(n, ys);
+        index.add(n, weighted ? yst : ys);
         RangeSearchResult search_result(n);
         float limit = 3 * bandwidth; // HUGE_VAL for no limit
-        index.range_search(n, ys, limit, &search_result);
+        index.range_search(n, weighted ? yst : ys, limit, &search_result);
 
         if (weighted) {
             memset(weights, 0, d * sizeof(float));
         }
+
         memset(ys1, 0, n * d * sizeof(float));
         converged = true;
         for (int i = 0; i < n; i++) {
@@ -108,16 +112,19 @@ void MeanShiftClustering::train() {
             float shift = 0;
             for (int l = 0; l < d; l++) {
                 ys1[i * d + l] /= y1_norm;
+
                 if (weighted) {
                     float disp = xs[i * d + l] - ys[i * d + l];
                     weights[l] += disp * disp;
                 }
+
                 float shift_d = ys1[i * d + l] - ys[i * d + l];
                 shift += shift_d * shift_d;
             }
             shift = sqrt(shift);
             converged &= shift < tolerance;
         }
+
         if (weighted) {
             float weight_norm = 0;
             for (int l = 0; l < d; l++) {
