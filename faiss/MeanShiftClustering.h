@@ -37,7 +37,7 @@ struct MeanShiftClusteringIterationStats {
 struct MeanShiftClustering {
     /// bandwidth used for KDE
     float bandwidth = 0.1;
-
+    /// set to HUGE_VAL for unbounded kernel
     float kernel_radius=0.5;
     /// entropy regularization coefficient for weight update
     float lambda = 10.;

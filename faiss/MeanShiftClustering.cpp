@@ -107,8 +107,7 @@ void MeanShiftClustering::train() {
         index.reset();
         index.add(n, weighted ? yst : ys);
         RangeSearchResult search_result(n);
-        float limit = 3 * bandwidth; // HUGE_VAL for no limit
-        index.range_search(n, weighted ? yst : ys, limit, &search_result);
+        index.range_search(n, weighted ? yst : ys, kernel_radius, &search_result);
 
         if (weighted) {
             memset(weights, 0, d * sizeof(float));

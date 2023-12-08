@@ -26,6 +26,7 @@ score = clustbench.get_score(dataset.labels, labels)
 # print(Ys)
 # print(score)
 
-# sns.set_theme()
-# sns.scatterplot(x=Y[:,0], y=Y[:,1], hue=labels)
-# plt.show()
+for i in range(Ys.shape[0]):
+    sns.set_theme()
+    sns.scatterplot(x=Ys[i,:,0], y=Ys[i,:,1], hue=labels)
+    plt.show()
