@@ -16,8 +16,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include <iostream>
-
 #include <omp.h>
 
 #include <faiss/IndexFlat.h>
@@ -39,9 +37,6 @@ MeanShiftClustering::MeanShiftClustering(size_t d, idx_t n, float* xs) : d(d), n
     }
     labels = new size_t[n];
     index = IndexFlatL2(d);
-    std::cout << xs << std::endl;
-    std::cout << "[" << xs[0] << ", " << xs[1] << "]" << std::endl;
-    std::cout << "[" << ys[0] << ", " << ys[1] << "]" << std::endl;
 }
 
 float k(float x) {
@@ -99,14 +94,8 @@ void MeanShiftClustering::train() {
     }
 
     bool converged = false;
-    size_t it = 0;
-    std::cout << "[" << ys[0] << ", " << ys[1] << "]" << std::endl;
-    std::cout << "bandwidth = " << bandwidth << std::endl;
     generate_stats();
     while (!converged) {
-        std::cout << "iteration " << it << std::endl;
-        it++;
-
         if (weighted) {
             for (idx_t i = 0; i < n; i++) {
                 for (size_t l = 0; l < d; l++) {
@@ -151,8 +140,6 @@ void MeanShiftClustering::train() {
             shift = sqrt(shift);
             converged &= shift < tolerance;
         }
-
-        std::cout << "[" << ys1[0] << ", " << ys1[1] << "]" << std::endl;
 
         if (weighted) {
             float weight_norm = 0;
