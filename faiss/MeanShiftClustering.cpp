@@ -72,6 +72,25 @@ void MeanShiftClustering::connected_components() {
     }
 }
 
+void MeanShiftClustering::generate_stats() {
+    if (!should_generate_stats) return;
+    for (size_t i = 0; i < n * d; i++) {
+        stats_ys.push_back(ys[i]);
+    }
+}
+
+// void MeanShiftClustering::generate_stats() {
+//     if (!should_generate_stats) return;
+//     MeanShiftClusteringIterationStats stat;
+//     stat.ys = new float[n * d];
+//     memcpy(stat.ys, ys, n * d * sizeof(float));
+//     if (weighted) {
+//         stat.weights = new float[d];
+//         memcpy(stat.weights, weights, d * sizeof(float));
+//     }
+//     stats.push_back(stat);
+// }
+
 void MeanShiftClustering::train() {
     memcpy(ys, xs, n * d * sizeof(float));
 
@@ -83,6 +102,7 @@ void MeanShiftClustering::train() {
     size_t it = 0;
     std::cout << "[" << ys[0] << ", " << ys[1] << "]" << std::endl;
     std::cout << "bandwidth = " << bandwidth << std::endl;
+    generate_stats();
     while (!converged) {
         std::cout << "iteration " << it << std::endl;
         it++;
@@ -148,6 +168,7 @@ void MeanShiftClustering::train() {
         float* temp = ys;
         ys = ys1;
         ys1 = temp;
+        generate_stats();
     }
 }
 

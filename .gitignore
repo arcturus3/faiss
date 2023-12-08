@@ -19,3 +19,4 @@
 faiss/python/swigfaiss_avx2.swig
 /build/
 /.venv/
+/.vscode/

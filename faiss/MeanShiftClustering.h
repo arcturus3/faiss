@@ -17,6 +17,11 @@
 
 namespace faiss {
 
+struct MeanShiftClusteringIterationStats {
+    float* ys;
+    float* weights;
+};
+
 /** K-means clustering based on assignment - centroid update iterations
  *
  * The clustering is based on an Index object that assigns training
@@ -32,6 +37,8 @@ namespace faiss {
 struct MeanShiftClustering {
     /// bandwidth used for KDE
     float bandwidth = 0.1;
+
+    float kernel_radius=0.5;
     /// entropy regularization coefficient for weight update
     float lambda = 10.;
     /// stop when the mean shift magnitude is less than tolerance for all points
@@ -42,6 +49,8 @@ struct MeanShiftClustering {
     bool weighted = false;
     /// log info during clustering
     bool verbose = false;
+
+    bool should_generate_stats = true;
 
     /// dimension of vectors
     size_t d;
@@ -63,6 +72,9 @@ struct MeanShiftClustering {
     size_t* labels;
     /// index used during clustering
     IndexFlatL2 index;
+    std::vector<MeanShiftClusteringIterationStats> stats;
+    /// workaround for issues generating MeanShiftClusteringIterationStatsVector interface
+    std::vector<float> stats_ys;
 
     MeanShiftClustering(size_t d, idx_t n, float* xs);
 
@@ -72,9 +84,11 @@ struct MeanShiftClustering {
      * @param xs        training vectors, size n * d
      * @param index     index used for assignment
      */
-    virtual void train();
+    void train();
 
     void connected_components();
+
+    void generate_stats();
 
     virtual ~MeanShiftClustering() {}
 };

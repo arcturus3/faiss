@@ -253,6 +253,7 @@ namespace std {
 %template(InvertedListsPtrVector) std::vector<faiss::InvertedLists*>;
 %template(RepeatVector) std::vector<faiss::Repeat>;
 %template(ClusteringIterationStatsVector) std::vector<faiss::ClusteringIterationStats>;
+%template(MeanShiftClusteringIterationStatsVector) std::vector<faiss::MeanShiftClusteringIterationStats>;
 %template(ParameterRangeVector) std::vector<faiss::ParameterRange>;
 
 
