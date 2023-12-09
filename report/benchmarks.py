@@ -7,10 +7,10 @@ from wrapper import MeanShift
 
 
 path = os.path.join('~', 'clustering-data-v1')
-dataset = clustbench.load_dataset('wut', 'x3', path=path)
+dataset = clustbench.load_dataset('sipu', 'jain', path=path)
 rng = np.random.default_rng()
-X = rng.choice(dataset.data, size=100)
-# X = dataset.data
+# X = rng.choice(dataset.data, size=250)
+X = dataset.data
 
 bandwidth = estimate_bandwidth(X)
 mean_shift = MeanShift(X, bandwidth=bandwidth)
